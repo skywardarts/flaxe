@@ -1,6 +1,4 @@
-﻿
-
-class math_helper
+﻿class math_helper
 {
 	public static const e:Number = 2.718282;
 	public static const log10e:Number = 0.434295;
