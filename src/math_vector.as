@@ -9,6 +9,7 @@ class math_vector2 implements math_vector_base
 	{
 		this.x_ = x_;
 		this.y_ = y_;
+		this.changed = false;
 	}
 
 	public static function get blank():math_vector2 { return new math_vector2(); }
@@ -32,7 +33,12 @@ class math_vector2 implements math_vector_base
 	
 	public function set x(x_:int):void
 	{
-		this.x_ = x_;
+		if(this.x_ != x_)
+		{
+			this.x_ = x_;
+			
+			this.changed = true;
+		}
 	}
 	
 	public function get y():int
@@ -42,11 +48,22 @@ class math_vector2 implements math_vector_base
 	
 	public function set y(y_:int):void
 	{
-		this.y_ = y_;
+		if(this.y_ != y_)
+		{
+			this.y_ = y_;
+			
+			this.changed = true;
+		}
+	}
+	
+	public function clone():math_vector2
+	{
+		return new math_vector2(this.x_, this.y_);
 	}
 	
 	private var x_:int;
 	private var y_:int;
+	public var changed:Boolean;
 }
 
 class math_vector3 implements math_vector_base

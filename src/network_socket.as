@@ -107,6 +107,8 @@ class network_socket// extends abstract
 	public function send(ba:ByteArray, successful:Function, failure:Function):void
 	{
 		var self:network_socket = this;
+		// todo(daemn) check if connected
+		
 		/*
 		var send_successful_handler:Function = function()
 		{

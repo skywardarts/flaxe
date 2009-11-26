@@ -70,7 +70,7 @@ class core_timer
 	
 	public function update():void
 	{
-		var now:Number = (new Date()).milliseconds;
+		var now:Number = (new Date()).time;
 		
 		var total_real_time_:int = now - this.start_time_;
 		var total_flash_time_:int = now - this.start_time_;

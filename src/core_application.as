@@ -30,9 +30,9 @@ class core_application
 	
 	public function initialize():void
 	{
-		debug.initialize(this.mc);
-		
 		this.initialize_settings();
+
+		this.initialize_components();
 		
 		this.mc.addEventListener(Event.ENTER_FRAME, this.main);
 	}
@@ -48,15 +48,30 @@ class core_application
 		this.url = mc.loaderInfo.url;
 	}
 	
+	public function initialize_components():void
+	{
+		debug.initialize(this.mc);
+		
+		var fps:frames_component = new frames_component(this.mc, this.mc.stage.stageWidth - 185, 25, 200, 100);
+
+		this.components.push(fps);
+		
+		var ram:memory_component = new memory_component(this.mc, this.mc.stage.stageWidth - 185, 85, 200, 100);
+		
+		this.components.push(ram);
+	}
+	
 	public function main(e:Event):void
 	{
+		this.timer.update();
+		
 		var time:core_timestamp = this.timer.current_time;
 		
 		var i, l;
 		
 		for(i = 0, l = this.components.length; i < l; ++i)
 			this.components[i].update(time);
-		
+			
 		this.graphics.clear(0x000000);
 		
 		for(i = 0, l = this.components.length; i < l; ++i)

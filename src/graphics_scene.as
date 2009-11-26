@@ -20,8 +20,8 @@ class graphics_scene
 		//this.camera.update(time);
 		//this.stats.update(time);
 		
-		for each(var model:graphics_model_base in this.models)
-			model.update(time);
+		//for each(var model:graphics_model_base in this.models)
+			//model.update(time);
 	}
 
 	public function draw(device:graphics_device):void

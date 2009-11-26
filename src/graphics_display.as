@@ -13,15 +13,11 @@ class graphics_display
 		
 		this.box = new Rectangle(0, 0, width, height);
 		
-		this.background_ = background_;
+		this.set_background(background_);
 		
 		this.changed = new Array();
 		
-		var bitmap:BitmapData = new BitmapData(width, height, transparent, background_);
-		
-		bitmap.fillRect(bitmap.rect, background_);
-		
-		this.background_bytes = bitmap.getPixels(bitmap.rect);
+		this.clear();
 	}
 
 	public function get width():Number
@@ -48,15 +44,20 @@ class graphics_display
 	{
 		if(background_ != this.background_)
 		{
-			this.background_ = background_;
-			
-			// create background byte array
-			var bitmap:BitmapData = new BitmapData(this.width, this.height, this.transparent, this.background_);
-			
-			bitmap.fillRect(bitmap.rect, this.background_);
-			trace(bitmap.rect);
-			this.background_bytes = bitmap.getPixels(bitmap.rect);
+			this.set_background(background_);
 		}
+	}
+	
+	private function set_background(background_:int):void
+	{
+		this.background_ = background_;
+		
+		// create background byte array
+		var bitmap:BitmapData = new BitmapData(this.width, this.height, this.transparent, this.background_);
+		
+		bitmap.fillRect(bitmap.rect, this.background_);
+		trace(bitmap.rect);
+		this.background_bytes = bitmap.getPixels(bitmap.rect);
 	}
 	
 	public function get background():int
@@ -104,6 +105,7 @@ class graphics_display
 		return this.data[index];
 	}
 	
+	
 	public function clear():void
 	{
 		this.data = new Array(this.width * this.height);
@@ -133,7 +135,7 @@ class graphics_display
 			for each(var index:int in this.changed)
 			{
 				var color:int = this.data[index];
-				
+
 				if(color != this.cache_data[index])
 				{
 					//trace(index*4+0, index*4+1, index*4+2, index*4+3);
@@ -141,6 +143,7 @@ class graphics_display
 					//var offset:int = this.transparent ? 1 : 0;
 					
 					//if(this.transparent)
+
 					this.pixel_bytes[index*4+0] = color >> 24 & 0xFF; // extract alpha
 					this.pixel_bytes[index*4+1] = color >> 16 & 0xFF; // extract red
 					this.pixel_bytes[index*4+2] = color >> 8 & 0xFF; // extract green
@@ -159,72 +162,32 @@ class graphics_display
 		
 		return this.pixel_bytes;
 	}
-	/*
-	public function copy_primitive_pixels(p:IPrimitive)
+	
+	public function copy_graphics_display(display:graphics_display, offset:Point):void
 	{
-		var display:graphics_display = p.display;
-		
-		var offset:int = int(p.Offset.Y * this.width + p.Offset.X);
-		
-		var box:Rectangle = display.Box;
-		
-		//trace("offset: ", offset);
-		//trace(int(box.y * box.width + box.x));
-		//trace(int(box.height * box.width));
-		//trace(this.data.length);
-		//trace(display.data.length);
-		//trace(display.data[0]);
-		//trace(display.Background);
-
-		for(var y:int = box.y, yl = int(box.y + box.height); y < yl; ++y)
+		if(offset.x > 0 && offset.y > 0 && offset.x < this.width && offset.y < this.height)
 		{
-			for(var x:int = box.x, xl = int(box.x + box.width); x < xl; ++x)
+			var box:Rectangle = display.box;
+			
+			for(var y1:int = box.y, y2 = int(box.y + box.height); y1 < y2; ++y1)
 			{
-				var i:int = int(y * box.width + x);
-				
-				if(display.data[i] != undefined)
+				for(var x1:int = box.x, x2 = int(box.x + box.width); x1 < x2; ++x1)
 				{
-					var index:int = int((y + p.offset.Y) * this.width + (x + p.offset.X));//int(offset + this.Box.width * y + x);
+					var i1:int = int(y1 * box.width + x1);
 					
-					this.data[index] = display.data[i];
-					
-					this.changed.push(index);
+					if(display.data[i1] != undefined)
+					{
+						var i2:int = int((y1 + offset.y) * this.width + (x1 + offset.x));
+						
+						this.data[i2] = display.data[i1];
+						
+						this.changed.push(i2);
+					}
 				}
 			}
 		}
-		*/
-		/*
-		for(var i:int = int(box.y * box.width + box.x), l = int(box.height * box.width - offset); i < l; ++i)
-		{
-			if(display.data[i] != undefined)
-			{
-				var index:int = int((i / box.width) * (this.Box.width - box.width) * );
-				
-				this.data[index] = display.data[i];
-				
-				this.changed.push(index);
-			}
-		}
-		*/
-		/*
-		for(var i:int = int(box.y * box.width + box.x), l = int(box.height * box.width - offset); i < l; ++i)
-		{
-			if(display.data[i] != undefined)
-			//if(display.data[i] != display.Background)
-			{
-				var index:int = int((i / box.width) * (this.Box.width - box.width) * );
-				//trace("i", i, display.data.length);
-				//trace("int(i + offset)", index, this.data.length);
-				this.data[index] = display.data[i];
-				//trace(display.data[i]);
-				//trace(0xFF0000);
-				
-				this.changed.push(index);
-			}
-		}
-		*/
-	//}
-	
+	}
+	/*
 	public function copy_pixels(source:graphics_display, box:Rectangle, point:Point):void
 	{
 		var offset:int = int(point.y * this.width + point.x);
@@ -241,9 +204,31 @@ class graphics_display
 		
 		for(var i:int = int(source_box.y * source_box.width + source_box.x), l = int(source_box.height * source_box.width + source_box.width); i < l; ++i)
 		{
-			this.data[int(i + offset)] = source_pixels[i];
+			var index:int = int(i + offset);
+			
+			this.data[index] = source_pixels[i];
+			
+			this.changed.push(index);
 		}
 	}
+	
+	public function draw(bitmap:BitmapData, point:Point):void
+	{
+		var offset:int = int(point.y * this.width + point.x);
+
+		var box:Rectangle = bitmap.rect;
+		
+		var source:ByteArray = bitmap.getPixels(box);
+
+		for(var i:int = int(box.y * box.width + box.x), l = int(box.height * box.width + box.width); i < l; ++i)
+		{
+			var index:int = int(i + offset);
+			trace(source[i]);
+			this.data[index] = source[i];
+			
+			this.changed.push(index);
+		}
+	}*/
 	
 	/**
 	* ByteArray clone method (5x faster than loop)
@@ -258,25 +243,24 @@ class graphics_display
 		return bitmap.getPixels(bitmap.rect);
 	}
 	
-	/* bug(daemn) wont allow graphics_display for some reason - probably problem with includes
 	public static function convert_bitmap_data(bitmap_data:BitmapData):graphics_display
 	{
 		//var byteArray:ByteArray = bitmapData.getPixels(bitmapData.rect);
 		var width:int = bitmap_data.rect.width;
 		var height:int = bitmap_data.rect.height;
 		
-		var graphics_display:graphics_display = new graphics_display(width, height);
+		var display:graphics_display = new graphics_display(width, height);
 		
 		for(var x:int = 0; x < width; ++x)
 		{
 			for(var y:int = 0; y < height; ++y)
 			{
-				graphics_display.set_pixel(x, y, bitmap_data.getPixel(x, y));
+				display.set_pixel(x, y, bitmap_data.getPixel(x, y));
 			}
 		}
 		
-		return graphics_display;
-	}*/
+		return display;
+	}
 	
 	public function equals(p:graphics_display):Boolean
 	{

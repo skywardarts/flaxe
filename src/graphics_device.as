@@ -23,9 +23,7 @@ class graphics_device
 		this.mc = mc;
 
 		this.blank = new BitmapData(800, 600, false, 0xFFFFFF);
-		//this.blank.smoothing = false;
-		//this.blank.pixelSnapping = PixelSnapping.AUTO;
-		
+
 		this.initialize_screen();
 		 
 		this.viewport = new graphics_viewport(0, 0, 800, 600);
@@ -40,16 +38,16 @@ class graphics_device
 		this.bmp = new Bitmap(this.screen);
 		this.bmp.smoothing = false;
 		this.bmp.pixelSnapping = PixelSnapping.AUTO;
+		this.bmp.y = 200;
+		this.bmp.x = 50;
 		
 		this.mc.addChild(this.bmp);
 	}
 
 	public function draw():void
 	{
-		//this.graphics.beginBitmapFill(this.drawer);
-		//this.graphics.drawRect(0, 0, 800, 600);
-		//this.graphics.endFill();
 		this.screen.setPixels(this.screen.rect, this.display.bytes);
+		
 	}
 	
 	public function clear(colour:uint):void
