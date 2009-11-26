@@ -13,14 +13,16 @@
   <externalLibraries editable="false"/>
   <compileList editable="false"/>
   <recentFiles editable="false">
+    <uri label="graphics_device.as">file:///S|/projects/flashx/src/graphics_device.as</uri>
+    <uri label="graphics_display.as">file:///S|/projects/flashx/src/graphics_display.as</uri>
+    <uri label="graphics_model.as">file:///S|/projects/flashx/src/graphics_model.as</uri>
+    <uri label="graphics_scene.as">file:///S|/projects/flashx/src/graphics_scene.as</uri>
+    <uri label="frames_component.as">file:///S|/projects/flashx/src/frames_component.as</uri>
+    <uri label="keyboard_device.as">file:///S|/projects/flashx/src/keyboard_device.as</uri>
+    <uri label="core_application.as">file:///S|/projects/flashx/src/core_application.as</uri>
     <uri label="core_time.as">file:///S|/projects/flashx/src/core_time.as</uri>
     <uri label="math_vector.as">file:///S|/projects/flashx/src/math_vector.as</uri>
     <uri label="include.as">file:///S|/projects/flashx/src/include.as</uri>
-    <uri label="core_application.as">file:///S|/projects/flashx/src/core_application.as</uri>
-    <uri label="graphics_display.as">file:///S|/projects/flashx/src/graphics_display.as</uri>
-    <uri label="graphics_model.as">file:///S|/projects/flashx/src/graphics_model.as</uri>
-    <uri label="graphics_device.as">file:///S|/projects/flashx/src/graphics_device.as</uri>
-    <uri label="graphics_scene.as">file:///S|/projects/flashx/src/graphics_scene.as</uri>
     <uri label="network_socket.as">file:///S|/projects/flashx/src/network_socket.as</uri>
   </recentFiles>
   <locations editable="false"/>

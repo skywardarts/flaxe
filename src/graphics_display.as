@@ -4,12 +4,18 @@ import flash.geom.*;
 
 class graphics_display
 {
-	public function graphics_display(width:int, height:int, transparent:Boolean = false, background_:int = 0, repeat:Boolean = false)
+	public var buffer:int;
+	
+	public function graphics_display(width:int, height:int, buffer:int, transparent:Boolean = false, background_:int = 0, repeat:Boolean = false)
 	{
 		this.data = new Array(width * height);
 		
 		this.transparent = transparent;
 		this.repeat = repeat;
+		
+		this.buffer = buffer;
+		
+		this.screen = new BitmapData(width + buffer, height + buffer, false, 0xCCCCCC);
 		
 		this.box = new Rectangle(0, 0, width, height);
 		
@@ -53,7 +59,7 @@ class graphics_display
 		this.background_ = background_;
 		
 		// create background byte array
-		var bitmap:BitmapData = new BitmapData(this.width, this.height, this.transparent, this.background_);
+		var bitmap:BitmapData = new BitmapData(this.width + this.buffer, this.height + this.buffer, this.transparent, this.background_);
 		
 		bitmap.fillRect(bitmap.rect, this.background_);
 		trace(bitmap.rect);
@@ -108,9 +114,13 @@ class graphics_display
 	
 	public function clear():void
 	{
-		this.data = new Array(this.width * this.height);
-		this.cache_data = new Array(this.width * this.height);
-		this.pixel_bytes = graphics_display.clone_byte_array(this.background_bytes, this.width, this.height, this.transparent);
+		this.background_bytes.position = 0;
+		
+		this.screen.setPixels(this.screen.rect, this.background_bytes);
+		
+		//this.data = new Array(this.width * this.height);
+		//this.cache_data = new Array(this.width * this.height);
+		//this.pixel_bytes = graphics_display.clone_byte_array(this.background_bytes, this.width, this.height, this.transparent);
 	}
 	
 	public function copy(p:graphics_display):graphics_display
@@ -125,7 +135,7 @@ class graphics_display
 	
 	public function clone():graphics_display
 	{
-		return (new graphics_display(this.width, this.height)).copy(this);
+		return (new graphics_display(this.width, this.height, 0)).copy(this);
 	}
 	
 	public function get bytes():ByteArray
@@ -163,10 +173,18 @@ class graphics_display
 		return this.pixel_bytes;
 	}
 	
+	public function copy_bitmapdata(display:BitmapData, rect:Rectangle):void
+	{
+		var bytes:ByteArray = display.getPixels(display.rect);
+		bytes.position = 0;
+		
+		this.screen.setPixels(new Rectangle(this.buffer/2+rect.x, this.buffer/2+rect.y, rect.width, rect.height), bytes);
+	}
+	
 	public function copy_graphics_display(display:graphics_display, offset:Point):void
 	{
-		if(offset.x > 0 && offset.y > 0 && offset.x < this.width && offset.y < this.height)
-		{
+		//if(offset.x >= 0 && offset.y >= 0 && offset.x <= this.width && offset.y <= this.height)
+		//{
 			var box:Rectangle = display.box;
 			
 			for(var y1:int = box.y, y2 = int(box.y + box.height); y1 < y2; ++y1)
@@ -185,7 +203,7 @@ class graphics_display
 					}
 				}
 			}
-		}
+		//}
 	}
 	/*
 	public function copy_pixels(source:graphics_display, box:Rectangle, point:Point):void
@@ -249,7 +267,7 @@ class graphics_display
 		var width:int = bitmap_data.rect.width;
 		var height:int = bitmap_data.rect.height;
 		
-		var display:graphics_display = new graphics_display(width, height);
+		var display:graphics_display = new graphics_display(width, height, 0);
 		
 		for(var x:int = 0; x < width; ++x)
 		{
@@ -285,6 +303,8 @@ class graphics_display
 	public var box:Rectangle;
 	
 	private var changed:Array;
+	
+	public var screen:BitmapData;
 	
 	private var cache:graphics_display;
 }

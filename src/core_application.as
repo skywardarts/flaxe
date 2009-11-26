@@ -67,15 +67,12 @@ class core_application
 		
 		var time:core_timestamp = this.timer.current_time;
 		
-		var i, l;
-		
-		for(i = 0, l = this.components.length; i < l; ++i)
-			this.components[i].update(time);
-			
-		this.graphics.clear(0x000000);
-		
-		for(i = 0, l = this.components.length; i < l; ++i)
-			this.components[i].draw(this.graphics);
+		for each(var component:* in this.components)
+		{
+			component.update(time);
+
+			component.draw(this.graphics);
+		}
 		
 		this.graphics.draw();
 	}

@@ -22,32 +22,48 @@ class graphics_device
 	{
 		this.mc = mc;
 
-		this.blank = new BitmapData(800, 600, false, 0xFFFFFF);
+		this.blank = new BitmapData(this.width, this.height, false, 0xFFFFFF);
 
 		this.initialize_screen();
 		 
-		this.viewport = new graphics_viewport(0, 0, 800, 600);
+		this.viewport = new graphics_viewport(0, 0, this.width, this.height);
 		 
-		this.display = new graphics_display(800, 600);
+		this.display = new graphics_display(this.width, this.height, 500);
+	}
+	
+	public function get width():int
+	{
+		return this.mc.stage.stageWidth;
+	}
+	
+	public function get height():int
+	{
+		return this.mc.stage.stageHeight;
 	}
 	
 	public function initialize_screen():void
 	{
-		this.screen = new BitmapData(800, 600, false, 0xCCCCCC);
+		this.screen = new BitmapData(this.width, this.height, false, 0xCCCCCC);
 
 		this.bmp = new Bitmap(this.screen);
 		this.bmp.smoothing = false;
 		this.bmp.pixelSnapping = PixelSnapping.AUTO;
-		this.bmp.y = 200;
-		this.bmp.x = 50;
+		this.bmp.y = 0;
+		this.bmp.x = 0;
 		
 		this.mc.addChild(this.bmp);
 	}
 
 	public function draw():void
 	{
-		this.screen.setPixels(this.screen.rect, this.display.bytes);
+		var rect:Rectangle = new Rectangle(250, 250, this.width, this.height);
 		
+		var bytes:ByteArray = this.display.screen.getPixels(rect);
+		bytes.position = 0;
+		
+		this.screen.setPixels(this.screen.rect, bytes);
+		
+		this.display.clear();
 	}
 	
 	public function clear(colour:uint):void
@@ -75,6 +91,6 @@ class graphics_device
 				//this.drawer.setPixel(x, y, 0xFFFFFF);
 				
 		// clear method supreme
-		this.display.clear();
+		//this.display.clear();
 	}
 }
