@@ -15,7 +15,7 @@ class graphics_display
 		
 		this.buffer = buffer;
 		
-		this.screen = new BitmapData(width + buffer, height + buffer, false, 0xCCCCCC);
+		this.screen = new BitmapData(width + buffer, height + buffer, true, 0x00000000);
 		
 		this.box = new Rectangle(0, 0, width, height);
 		
@@ -23,7 +23,7 @@ class graphics_display
 		
 		this.changed = new Array();
 		
-		this.clear();
+		//this.clear();
 	}
 
 	public function get width():Number
@@ -114,9 +114,10 @@ class graphics_display
 	
 	public function clear():void
 	{
-		this.background_bytes.position = 0;
+		//this.background_bytes.position = 0;
 		
-		this.screen.setPixels(this.screen.rect, this.background_bytes);
+		//this.screen.fillRect(this.screen.rect, 0);
+		//this.screen.setPixels(this.screen.rect, this.background_bytes);
 		
 		//this.data = new Array(this.width * this.height);
 		//this.cache_data = new Array(this.width * this.height);
@@ -175,10 +176,14 @@ class graphics_display
 	
 	public function copy_bitmapdata(display:BitmapData, rect:Rectangle):void
 	{
-		var bytes:ByteArray = display.getPixels(display.rect);
-		bytes.position = 0;
+		//var v:Vector.<uint> = display.getVector(rect);
 		
-		this.screen.setPixels(new Rectangle(this.buffer/2+rect.x, this.buffer/2+rect.y, rect.width, rect.height), bytes);
+		//var bytes:ByteArray = display.getPixels(display.rect);
+		//bytes.position = 0;
+		
+		this.screen.copyPixels(display, display.rect, new Point(rect.x, rect.y));
+		
+		//this.screen.setVector(new Rectangle(this.buffer/2+rect.x, this.buffer/2+rect.y, display.rect.width, display.rect.height), display.getVector(display.rect));
 	}
 	
 	public function copy_graphics_display(display:graphics_display, offset:Point):void

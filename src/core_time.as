@@ -52,7 +52,7 @@ class core_timer
 	
 	public function core_timer()
 	{
-		this.start_time_ = (new Date()).milliseconds;
+		this.start_time_ = (new Date()).time;
 		this.current_time_ = new core_timestamp();
 		
 		this.update();

@@ -1,7 +1,6 @@
 ﻿include "debug_component.as";
+include "info_component.as";
 include "scene_statistics_component.as";
-include "frames_component.as";
-include "memory_component.as";
 
 include "abstract.as";
 

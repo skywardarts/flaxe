@@ -7,6 +7,8 @@ import flash.display.*;
 
 class core_application
 {
+	public var info:info_component;
+	
 	public function core_application(mc:MovieClip)
 	{
 		this.mc = mc;
@@ -34,16 +36,36 @@ class core_application
 
 		this.initialize_components();
 		
+		this.mc.stage.addEventListener(Event.RESIZE, this.resize);
+		this.mc.stage.addEventListener(Event.DEACTIVATE, this.deactivate);
+		this.mc.stage.addEventListener(Event.ACTIVATE, this.activate);
 		this.mc.addEventListener(Event.ENTER_FRAME, this.main);
+	}
+	
+	public function activate(e:Event):void
+	{
+		this.active = true;
+	}
+	
+	public function deactivate(e:Event):void
+	{
+		this.active = false;
+	}
+	
+	public function resize(e:Event):void
+	{
+		
 	}
 	
 	public function initialize_settings():void
 	{
 		this.mc.stage.showDefaultContextMenu = false;
-		this.mc.stage.quality = StageQuality.LOW;
-		
-		var lc:LocalConnection = new LocalConnection();
-		this.domain = lc.domain;
+		this.mc.stage.quality = StageQuality.HIGH;
+		this.mc.stage.scaleMode = StageScaleMode.SHOW_ALL;//EXACT_FIT;
+		this.mc.stage.align = StageAlign.TOP_LEFT;
+		this.mc.stage.frameRate = 30;//32;
+
+		this.domain = (new LocalConnection()).domain;
 		
 		this.url = mc.loaderInfo.url;
 	}
@@ -52,29 +74,41 @@ class core_application
 	{
 		debug.initialize(this.mc);
 		
-		var fps:frames_component = new frames_component(this.mc, this.mc.stage.stageWidth - 185, 25, 200, 100);
+		var info:info_component = new info_component(this.mc, this.mc.stage.stageWidth - 185, 25, 200, 100);
 
-		this.components.push(fps);
+		this.components.push(info);
 		
+		this.info = info;
+		/*
 		var ram:memory_component = new memory_component(this.mc, this.mc.stage.stageWidth - 185, 85, 200, 100);
 		
-		this.components.push(ram);
+		this.components.push(ram);*/
 	}
 	
 	public function main(e:Event):void
 	{
 		this.timer.update();
 		
-		var time:core_timestamp = this.timer.current_time;
-		
-		for each(var component:* in this.components)
+		if(this.active)
 		{
-			component.update(time);
+			var time:core_timestamp = this.timer.current_time;
+			
+			this.info.start(time);
+			
+			var component:*;
+			
+			for each(component in this.components)
+				component.update(time);
 
-			component.draw(this.graphics);
+			this.timer.update();
+			
+			this.info.stop(this.timer.current_time);
+			
+			for each(component in this.components)
+				component.draw(this.graphics);
+			
+			this.graphics.draw();
 		}
-		
-		this.graphics.draw();
 	}
 	
 	public function initialize_input():void

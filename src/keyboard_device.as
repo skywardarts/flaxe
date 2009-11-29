@@ -197,22 +197,16 @@ class keyboard_device
 	
 	public function key_down(e:KeyboardEvent):void
 	{
-		if(this.state[e.keyCode] != true)
-		{
-			this.state[e.keyCode] = true;
-			
-			this.changed = true;
-		}
+		this.state.obj[e.keyCode] = true;
+		
+		this.changed = true;
 	}
 
 	public function key_up(e:KeyboardEvent):void
 	{
-		if(this.state[e.keyCode] != false)
-		{
-			this.state[e.keyCode] = false;
-			
-			this.changed = true;
-		}
+		delete this.state.obj[e.keyCode];
+		
+		this.changed = true;
 	}
 
 	public function clear_keys(e:Event):void

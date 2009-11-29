@@ -15,6 +15,11 @@ class graphics_scene
 		this.models.push(model);
 	}
 
+	public function remove_model(model:graphics_model_base):void
+	{
+		this.models.splice(this.models.lastIndexOf(model), 1);
+	}
+
 	public function update(time:core_timestamp):void
 	{
 		//this.camera.update(time);

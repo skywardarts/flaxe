@@ -22,13 +22,27 @@ class graphics_device
 	{
 		this.mc = mc;
 
-		this.blank = new BitmapData(this.width, this.height, false, 0xFFFFFF);
+		this.initialize();
+		
+		this.mc.stage.addEventListener(Event.RESIZE, this.resize);
+	}
+	
+	public function initialize()
+	{
+		this.blank = new BitmapData(this.width, this.height, true, 0xFFFFFFFF);
 
 		this.initialize_screen();
 		 
 		this.viewport = new graphics_viewport(0, 0, this.width, this.height);
 		 
-		this.display = new graphics_display(this.width, this.height, 500);
+		this.display = new graphics_display(this.width, this.height, 0);
+	}
+	
+	public function resize(e:Event):void
+	{
+		this.mc.removeChild(this.bmp);
+		
+		this.initialize();
 	}
 	
 	public function get width():int
@@ -43,27 +57,40 @@ class graphics_device
 	
 	public function initialize_screen():void
 	{
-		this.screen = new BitmapData(this.width, this.height, false, 0xCCCCCC);
+		this.screen = new BitmapData(this.width, this.height, true, 0x00000000);
 
 		this.bmp = new Bitmap(this.screen);
 		this.bmp.smoothing = false;
 		this.bmp.pixelSnapping = PixelSnapping.AUTO;
-		this.bmp.y = 0;
-		this.bmp.x = 0;
+		//this.bmp.y = 0;
+		//this.bmp.x = 0;
+		//this.bmp.width = this.width;
+		//this.bmp.height = this.height;
 		
 		this.mc.addChild(this.bmp);
 	}
 
 	public function draw():void
 	{
-		var rect:Rectangle = new Rectangle(250, 250, this.width, this.height);
+		//var rect:Rectangle = new Rectangle(0, 0, this.width, this.height);
 		
-		var bytes:ByteArray = this.display.screen.getPixels(rect);
-		bytes.position = 0;
+		//var bytes:ByteArray = this.display.screen.getPixels(this.display.screen.rect);
+		//bytes.position = 0;
 		
-		this.screen.setPixels(this.screen.rect, bytes);
+		//var v:Vector.<uint> = this.display.screen.getVector(this.display.screen.rect);
+		this.display.screen.unlock();
+		//trace(v.length);
+		//this.screen.lock();
+		//this.screen.setVector(this.display.screen.rect, this.display.screen.getVector(this.display.screen.rect));
+		//this.display.clear();
+		//this.screen.unlock();
+		this.screen.copyPixels(this.display.screen, this.display.screen.rect, this.display.screen.rect.topLeft);
+		//this.screen.setPixels(this.screen.rect, bytes);
 		
-		this.display.clear();
+		this.display.screen.lock();
+		this.display.screen.fillRect(this.display.screen.rect, 0);
+		
+		
 	}
 	
 	public function clear(colour:uint):void
