@@ -36,6 +36,8 @@
 	{
 		return this.y + this.width;
 	}
+	
+	
 	/* todo(daemn) 3d projection is on todo list
 	public function project(source:IVector, projection:IMatrix, view:IMatrix, world:IMatrix):IVector
 	{
@@ -80,11 +82,11 @@
 		return "[viewport " + this.x + ", " + this.y + " width: " + this.width + " height: " + this.height + "]";
 	}
 	
-	private var x:int;
-	private var y:int;
+	public var x:int;
+	public var y:int;
 	
-	private var width:int;
-	private var height:int;
+	public var width:int;
+	public var height:int;
 	
 	private var min_depth:Number;
 	private var max_depth:Number;

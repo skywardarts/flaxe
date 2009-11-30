@@ -11,7 +11,15 @@ class core_application
 	
 	public function core_application(mc:MovieClip)
 	{
-		this.mc = mc;
+		this.mc = new MovieClip();
+		this.mc.x = 0;
+		this.mc.y = 0;
+		//this.mc.scaleX = mc.stage.stageWidth / 240;
+		//this.mc.scaleY = mc.stage.stageHeight / 160;
+		
+		mc.addChild(this.mc);
+		
+		//this.mc = mc;
 		this.active = true;
 		
 		this.components = new Array();
@@ -19,7 +27,7 @@ class core_application
 		this.timer = new core_timer();
 		
 		this.keyboard = new keyboard_device(this.mc);
-		this.graphics = new graphics_device(this.mc);
+		this.graphics = new graphics_device(this.mc, 1024, 800);
 
 		this.initialize();
 	}
@@ -63,7 +71,7 @@ class core_application
 		this.mc.stage.quality = StageQuality.HIGH;
 		this.mc.stage.scaleMode = StageScaleMode.SHOW_ALL;//EXACT_FIT;
 		this.mc.stage.align = StageAlign.TOP_LEFT;
-		this.mc.stage.frameRate = 30;//32;
+		this.mc.stage.frameRate = 120;//32;
 
 		this.domain = (new LocalConnection()).domain;
 		

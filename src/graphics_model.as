@@ -29,9 +29,7 @@ class graphics_model_2d implements graphics_model_base
 	
 	public function draw(device:graphics_device):void
 	{
-		var rect:Rectangle = new Rectangle(this.position.x, this.position.y * -1, this.display.rect.width, this.display.rect.height);
-		
-		device.display.copy_bitmapdata(this.display, rect);//, new Point(this.position.x, this.position.y * -1));
+
 	}
 	
 	public function get changed():Boolean

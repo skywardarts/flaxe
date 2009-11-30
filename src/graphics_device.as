@@ -18,7 +18,7 @@ class graphics_device
 	
 	private var mc:MovieClip;
 
-	public function graphics_device(mc:MovieClip)
+	public function graphics_device(mc:MovieClip, w:int, h:int)
 	{
 		this.mc = mc;
 
@@ -27,46 +27,51 @@ class graphics_device
 		this.mc.stage.addEventListener(Event.RESIZE, this.resize);
 	}
 	
-	public function initialize()
+	public function initialize():void
 	{
-		this.blank = new BitmapData(this.width, this.height, true, 0xFFFFFFFF);
+		//this.blank = new BitmapData(240, 160, true, 0xFFFFFFFF);
+
+		this.viewport = new graphics_viewport(0, 0, 240, 160);
+		 
+		this.display = new graphics_display(1024, 800, 0);
 
 		this.initialize_screen();
 		 
-		this.viewport = new graphics_viewport(0, 0, this.width, this.height);
-		 
-		this.display = new graphics_display(this.width, this.height, 0);
+
 	}
 	
 	public function resize(e:Event):void
 	{
 		this.mc.removeChild(this.bmp);
 		
-		this.initialize();
+		this.initialize(); // todo(daemn) fix w/h
 	}
 	
 	public function get width():int
 	{
-		return this.mc.stage.stageWidth;
+		return this.viewport.width;
+		//return this.mc.stage.stageWidth;
 	}
 	
 	public function get height():int
 	{
-		return this.mc.stage.stageHeight;
+		return this.viewport.height;
+		//return this.mc.stage.stageHeight;
 	}
 	
 	public function initialize_screen():void
 	{
-		this.screen = new BitmapData(this.width, this.height, true, 0x00000000);
+		this.screen = new BitmapData(240, 160, true, 0x00000000);
 
 		this.bmp = new Bitmap(this.screen);
 		this.bmp.smoothing = false;
-		this.bmp.pixelSnapping = PixelSnapping.AUTO;
+		this.bmp.pixelSnapping = PixelSnapping.ALWAYS;
 		//this.bmp.y = 0;
 		//this.bmp.x = 0;
 		//this.bmp.width = this.width;
 		//this.bmp.height = this.height;
-		
+		this.bmp.scaleX = 1024 / 240;
+		this.bmp.scaleY = 800 / 160;
 		this.mc.addChild(this.bmp);
 	}
 
@@ -84,11 +89,11 @@ class graphics_device
 		//this.screen.setVector(this.display.screen.rect, this.display.screen.getVector(this.display.screen.rect));
 		//this.display.clear();
 		//this.screen.unlock();
-		this.screen.copyPixels(this.display.screen, this.display.screen.rect, this.display.screen.rect.topLeft);
+		this.screen.copyPixels(this.display.screen, this.screen.rect, this.display.screen.rect.topLeft);
 		//this.screen.setPixels(this.screen.rect, bytes);
 		
 		this.display.screen.lock();
-		this.display.screen.fillRect(this.display.screen.rect, 0);
+		//this.display.screen.fillRect(this.display.screen.rect, 0);
 		
 		
 	}

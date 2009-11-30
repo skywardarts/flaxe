@@ -5,34 +5,46 @@ class graphics_scene
 	public function graphics_scene()
 	{
 		this.models = new Array();
-		//this.camera = new graphics_default_camera(0, 0, -200);
+		this.camera = new graphics_camera_2d(0, 0);
 		
 		//this.stats = new scene_statistics_component(mc, 0, 0, 200, 200);
 	}
 	
-	public function add_model(model:graphics_model_base):void
+	public function add_model(model:graphics_model_2d):void
 	{
 		this.models.push(model);
 	}
 
-	public function remove_model(model:graphics_model_base):void
+	public function remove_model(model:graphics_model_2d):void
 	{
 		this.models.splice(this.models.lastIndexOf(model), 1);
 	}
 
 	public function update(time:core_timestamp):void
 	{
-		//this.camera.update(time);
+		this.camera.update(time);
 		//this.stats.update(time);
-		
-		//for each(var model:graphics_model_base in this.models)
-			//model.update(time);
+
 	}
 
 	public function draw(device:graphics_device):void
 	{
-		for each(var model:graphics_model_base in this.models)
-			model.draw(device);
+		
+		
+		for each(var model:graphics_model_2d in this.models)
+			if(model.position.x >= this.camera.position.x - device.viewport.right / 2
+			   && model.position.y >= this.camera.position.y - device.viewport.bottom / 2
+			   && model.position.x <= this.camera.position.x + device.viewport.right / 2
+			   && model.position.y <= this.camera.position.y + device.viewport.bottom / 2)
+			{
+				var rect:Rectangle = new Rectangle((model.position.x - this.camera.position.x) + (device.width / 2), (model.position.y - this.camera.position.y) * -1 + (device.height / 2), model.display.rect.width, model.display.rect.height);
+				trace("new play pos: " + rect.x + " / " + rect.y);
+				device.display.copy_bitmapdata(model.display, rect);//, new Point(this.position.x, this.position.y * -1));
+
+
+				//model.draw(device);
+				
+			}
 		
 		/* todo(daemn) 3d planned
 		this.stats.reset();
@@ -131,6 +143,6 @@ class graphics_scene
 	}
 	
 	private var models:Array;
-	//private var camera:graphics_camera_base;
+	public var camera:graphics_camera_2d;
 	//private var stats:scene_statistics_component;
 }

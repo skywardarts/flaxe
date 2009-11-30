@@ -26,6 +26,7 @@ include "network_client.as";
 // graphics
 include "graphics_errors.as";
 include "graphics_model.as";
+include "graphics_camera.as";
 include "graphics_scene.as";
 include "graphics_device.as";
 include "graphics_display.as";
