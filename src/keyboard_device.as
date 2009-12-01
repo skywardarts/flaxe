@@ -19,10 +19,6 @@ class keyboard_device
 			
 			mc.mouseChildren = false;
 			
-			mc.stage.addEventListener(KeyboardEvent.KEY_DOWN, this.key_down);
-			mc.stage.addEventListener(KeyboardEvent.KEY_UP, this.key_up);
-			mc.stage.addEventListener(Event.DEACTIVATE, this.clear_keys);
-			
 			this.initialize();
 		//}
 		//else
@@ -129,7 +125,7 @@ class keyboard_device
 		this.key_codes[key_code.F8] = "F8";
 		this.key_codes[key_code.F9] = "F9";
 		this.key_codes[key_code.F10] = "F10";
-		this.key_codes[key_code.F11] = "F11";
+		this.key_codes[key_code.f11] = "F11";
 		this.key_codes[key_code.F12] = "F12";
 		this.key_codes[key_code.F13] = "F13";
 		this.key_codes[key_code.F14] = "F14";
@@ -195,21 +191,21 @@ class keyboard_device
 		this.key_codes[key_code.OemClear] = "Clear";
 	}
 	
-	public function key_down(e:KeyboardEvent):void
+	public function key_down(code:int):void
 	{
-		this.state.obj[e.keyCode] = true;
+		this.state.obj[code] = true;
 		
 		this.changed = true;
 	}
 
-	public function key_up(e:KeyboardEvent):void
+	public function key_up(code:int):void
 	{
-		delete this.state.obj[e.keyCode];
+		delete this.state.obj[code];
 		
 		this.changed = true;
 	}
 
-	public function clear_keys(e:Event):void
+	public function clear_keys():void
 	{
 		this.state.clear();
 	}
@@ -218,7 +214,7 @@ class keyboard_device
 	{
 		this.changed = false;
 		
-		return this.state;
+		return this.state; // todo(daemn) need to allow multiple states to co-exist
 	}
 	
 	public function key_to_string(key:uint):String

@@ -89,7 +89,7 @@
 	public static const F8:uint = 119;
 	public static const F9:uint = 120;
 	public static const F10:uint = 121;
-	public static const F11:uint = 122;
+	public static const f11:uint = 122;
 	public static const F12:uint = 123;
 	public static const F13:uint = 124;
 	public static const F14:uint = 125;

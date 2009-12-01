@@ -8,12 +8,12 @@ class debug
 	
 	public static function initialize(mc:MovieClip)
 	{
-		enabled = false;
+		enabled = true;
 		
 		box = new TextField();
 		box.x = 0; box.y = 0;
 		box.width = 800; box.height = 200;
-		box.defaultTextFormat = new TextFormat("Verdana", 12, 0x000000, false, false, false);
+		box.defaultTextFormat = new TextFormat("Verdana", 12, 0xFFFFFF, false, false, false);
 		box.selectable = false;
 		box.multiline = true;
 		box.wordWrap = true;

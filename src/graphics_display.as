@@ -181,7 +181,7 @@ class graphics_display
 		//var bytes:ByteArray = display.getPixels(display.rect);
 		//bytes.position = 0;
 		
-		this.screen.copyPixels(display, display.rect, new Point(rect.x, rect.y));
+		this.screen.copyPixels(display, display.rect, rect.topLeft);
 		
 		//this.screen.setVector(new Rectangle(this.buffer/2+rect.x, this.buffer/2+rect.y, display.rect.width, display.rect.height), display.getVector(display.rect));
 	}

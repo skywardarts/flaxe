@@ -32,10 +32,10 @@ class graphics_scene
 		
 		
 		for each(var model:graphics_model_2d in this.models)
-			if(model.position.x >= this.camera.position.x - device.viewport.right / 2
-			   && model.position.y >= this.camera.position.y - device.viewport.bottom / 2
-			   && model.position.x <= this.camera.position.x + device.viewport.right / 2
-			   && model.position.y <= this.camera.position.y + device.viewport.bottom / 2)
+			if(model.position.x + model.display.width >= this.camera.position.x - device.width / 2
+			   && model.position.y + model.display.height >= this.camera.position.y - device.height / 2
+			   && model.position.x - model.display.width <= this.camera.position.x + device.width / 2
+			   && model.position.y - model.display.height <= this.camera.position.y + device.height / 2)
 			{
 				var rect:Rectangle = new Rectangle((model.position.x - this.camera.position.x) + (device.width / 2), (model.position.y - this.camera.position.y) * -1 + (device.height / 2), model.display.rect.width, model.display.rect.height);
 				trace("new play pos: " + rect.x + " / " + rect.y);

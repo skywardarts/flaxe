@@ -18,88 +18,83 @@ class graphics_device
 	
 	private var mc:MovieClip;
 
-	public function graphics_device(mc:MovieClip, w:int, h:int)
+	public function graphics_device(mc:MovieClip, display_width:int, display_height:int, viewport_width:int, viewport_height:int)
 	{
 		this.mc = mc;
 
-		this.initialize();
-		
-		this.mc.stage.addEventListener(Event.RESIZE, this.resize);
+		this.initialize(display_width, display_height, viewport_width, viewport_height);
 	}
 	
-	public function initialize():void
+	public function initialize(display_width:int, display_height:int, viewport_width:int, viewport_height:int):void
 	{
-		//this.blank = new BitmapData(240, 160, true, 0xFFFFFFFF);
-
-		this.viewport = new graphics_viewport(0, 0, 240, 160);
-		 
-		this.display = new graphics_display(1024, 800, 0);
-
-		this.initialize_screen();
-		 
-
+		this.resize_display(display_width, display_height, false);
+		
+		this.resize_viewport(viewport_width, viewport_height, true);
 	}
 	
-	public function resize(e:Event):void
+	public function resize_display(width:int, height:int, rescale:Boolean = true):void
 	{
-		this.mc.removeChild(this.bmp);
+		this.display = new graphics_display(width, height, 0);
+
+		this.screen = new BitmapData(width, height, true, 0x00000000);
 		
-		this.initialize(); // todo(daemn) fix w/h
+		if(this.bmp != null)
+			this.mc.removeChild(this.bmp);
+		
+		this.bmp = new Bitmap(this.screen);
+		this.bmp.smoothing = false;
+		this.bmp.pixelSnapping = PixelSnapping.ALWAYS;
+		
+		if(rescale)
+			this.rescale();
+		
+		this.mc.addChild(this.bmp);
+	}
+	
+	public function resize_viewport(width:int, height:int, rescale:Boolean = true):void
+	{
+		this.viewport = new graphics_viewport(0, 0, width, height);
+
+		if(rescale)
+			this.rescale();
+	}
+	
+	public function rescale():void
+	{
+		this.bmp.scaleX = this.viewport.width / this.display.width;
+		this.bmp.scaleY = this.viewport.height / this.display.height;
 	}
 	
 	public function get width():int
 	{
-		return this.viewport.width;
-		//return this.mc.stage.stageWidth;
+		return this.display.width;
 	}
 	
 	public function get height():int
 	{
-		return this.viewport.height;
-		//return this.mc.stage.stageHeight;
+		return this.display.height;
 	}
 	
-	public function initialize_screen():void
-	{
-		this.screen = new BitmapData(240, 160, true, 0x00000000);
-
-		this.bmp = new Bitmap(this.screen);
-		this.bmp.smoothing = false;
-		this.bmp.pixelSnapping = PixelSnapping.ALWAYS;
-		//this.bmp.y = 0;
-		//this.bmp.x = 0;
-		//this.bmp.width = this.width;
-		//this.bmp.height = this.height;
-		this.bmp.scaleX = 1024 / 240;
-		this.bmp.scaleY = 800 / 160;
-		this.mc.addChild(this.bmp);
-	}
-
 	public function draw():void
 	{
-		//var rect:Rectangle = new Rectangle(0, 0, this.width, this.height);
-		
-		//var bytes:ByteArray = this.display.screen.getPixels(this.display.screen.rect);
-		//bytes.position = 0;
-		
-		//var v:Vector.<uint> = this.display.screen.getVector(this.display.screen.rect);
 		this.display.screen.unlock();
-		//trace(v.length);
+
+		// draw method 1
 		//this.screen.lock();
-		//this.screen.setVector(this.display.screen.rect, this.display.screen.getVector(this.display.screen.rect));
-		//this.display.clear();
+		//this.screen.setVector(this.screen.rect, this.display.screen.getVector(this.display.screen.rect));
 		//this.screen.unlock();
+		
+		// draw method 2
 		this.screen.copyPixels(this.display.screen, this.screen.rect, this.display.screen.rect.topLeft);
-		//this.screen.setPixels(this.screen.rect, bytes);
-		
+
 		this.display.screen.lock();
-		//this.display.screen.fillRect(this.display.screen.rect, 0);
-		
-		
+		this.clear(0); // temp(daemn) not gonna need this when using tiles
 	}
 	
-	public function clear(colour:uint):void
+	public function clear(color:uint):void
 	{
+		this.display.screen.fillRect(this.display.screen.rect, color);
+		
 		// clear method 1
 		//this.screen = new BitmapData(800, 600, false, 0xFFFFFF);
 		
