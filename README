@@ -7,7 +7,6 @@ FlashX is released under the MIT license and is copyright (c) 2009 Daemn (daemn.
 
 
 == Importing
-FlashX does not use the "import" keyword (at the moment). Instead, it is used by including all source into 1 file (which is done inside include.as).
 
 
 == Code Formatting
