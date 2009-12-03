@@ -1,7 +1,6 @@
 == FlashX Readme
-Copyright (C) 2009 Daemn (daemn.com). All rights reserved.
 
-This library is slowly being converted from the old FlashX when needed. Much of it still needs converting/improvements.
+This library is slowly being converted from the old FlashX when needed. Much of it still needs converting/improvements to HaXe.
 
 == License
 FlashX is released under the MIT license and is copyright (c) 2009 Daemn (daemn.com). A copy of the MIT license can be found in the LICENSE file.
