@@ -1,9 +1,9 @@
-== FlashX Readme
+== FlaXe Readme
 
-This library is slowly being converted from the old FlashX when needed. Much of it still needs converting/improvements to HaXe.
+This library is slowly being converted from an old version of FlashX. Much of it still needs converting/improvements to HaXe.
 
 == License
-FlashX is released under the MIT license and is copyright (c) 2009 Daemn (daemn.com). A copy of the MIT license can be found in the LICENSE file.
+FlaXe is released under the MIT license and is copyright (c) 2009 Daemn (daemn.com). A copy of the MIT license can be found in the LICENSE file.
 
 
 == Importing
