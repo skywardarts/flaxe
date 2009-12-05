@@ -2,8 +2,9 @@
 
 class Camera2
 {
-	public var x(getX, setX):Int;
-	public var y(getY, setY):Int;
+	public var x(get_x, set_x):Int;
+	public var y(get_y, set_y):Int;
+	public var target(get_target, set_target):Int;
 	
 	public function new(x_:Int, y_:Int)
 	{
@@ -12,39 +13,49 @@ class Camera2
 	
 	public function update(time:flaxe.core.Timestamp):Void
 	{
-		if(this.model != null)
+		if(this.target_ != null)
 		{
-			this.position.x = this.model.position.x;
-			this.position.y = this.model.position.y;
+			this.position.x = this.target_.position.x;
+			this.position.y = this.target_.position.y;
 			
 			//trace("cam: " + this.position.x + " / " + this.position.y);
 		}
 	}
 	
-	public inline function getX():Int
+	public inline function get_x():Int
 	{
 		return this.position.x;
 	}
 	
-	public inline function setX(x_:Int):Int
+	public inline function set_x(x_:Int):Int
 	{
 		this.position.x = x_;
 		
 		return x_;
 	}
 	
-	public inline function getY():Int
+	public inline function get_y():Int
 	{
 		return this.position.y;
 	}
 	
-	public inline function setY(y_:Int):Int
+	public inline function set_y(y_:Int):Int
 	{
 		this.position.y = y_;
 		
 		return y_;
 	}
 	
-	public var model:flaxe.graphics.Model2;
+	public inline function get_target():flaxe.graphics.Object
+	{
+		this->target_;
+	}
+	
+	public inline function set_target(target_:flaxe.graphics.Object):flaxe.graphics.Object
+	{
+		return this->target_ = target;
+	}
+	
+	public var target_:flaxe.graphics.Object;
 	public var position:flaxe.math.Vector2;
 }

@@ -72,10 +72,7 @@ class InformationComponent
 		this.ms = time.total_real_time - this.start_real_time;
 		
 		this.ms_title.text = cast ms + " MS";
-	}
-	
-	public function update(time:flaxe.core.Timestamp):Void
-	{
+		
 		++this.frames_elasped;
 
 		this.ms_elasped += time.elapsed_real_time;
@@ -91,21 +88,11 @@ class InformationComponent
 		}
 		
 		this.memory_title.text = cast flash.system.System.totalMemory / 1024 / 1024 + " MB";
-		
-		/*
-		++this.frames;
+	}
+	
+	public function update(time:flaxe.core.Timestamp):Void
+	{
 
-		this.now = getTimer();
-		
-		if((this.now - this.before) > this.delay)
-		{
-			this.fps = this.frames;
-			
-			this.txt.text = String(this.frames) + " FPS";
-
-			this.frames = 0;
-			this.before = this.now;
-		}*/
 	}
 
 	public function draw(device:flaxe.graphics.Device):Void

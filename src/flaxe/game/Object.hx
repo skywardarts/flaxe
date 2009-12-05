@@ -2,6 +2,7 @@ package flaxe.game;
 
 class Object
 {
+	public var id:Int;
 	public var x(getX, setX):Int;
 	public var y(getY, setY):Int;
 	public var width(getWidth, never):Int;
@@ -9,6 +10,7 @@ class Object
 	
 	public function new()
 	{
+		this.id = 0;
 		this.model = new flaxe.graphics.Model2();
 		this.position = new flaxe.math.Vector2();
 		this.rotation = new flaxe.math.Vector2();

@@ -2,29 +2,22 @@
 
 class Display
 {
-	//public var width(getWidth, never):Int;
-	//public var height(getHeight, never):Int;
-	
-	//public var buffer:Int;
-	
 	public var width:Int;
 	public var height:Int;
-	//public var screen:flash.Vector<Int>;
 	public var memory:de.polygonal.ds.mem.IntMemory;
-	public var v1:flash.Vector<UInt>;
+	public var buffer:flash.Vector<UInt>;
 	
-	public function new(width:Int, height:Int, ?buffer:Int = 0)
+	public function new(width:Int, height:Int)
 	{
 		this.width = width;
 		this.height = height;
 		
-		this.memory = null;
+		this.memory = de.polygonal.ds.mem.MemoryManager.getIntMemory(width * height);
 		
-		trace("allocating" + width*height);
+		var bmp = new flash.display.BitmapData(width, height, false, 0x000000);
 		
+		this.buffer = bmp.getVector(bmp.rect);
 		
-		var bmp:flash.display.BitmapData = new flash.display.BitmapData(width, height, false, 0x000000);
-		this.v1 = bmp.getVector(bmp.rect);
 		
 		
 		//this.data = new Array(width * height);
@@ -47,10 +40,15 @@ class Display
 	
 	public inline function clear():Void
 	{
-		this.memory.fromVector(this.v1);
+		this.memory.fromVector(this.buffer);
 	}
 	
-	public inline function draw(display:Display, offset:flash.geom.Point):Void
+	public inline function draw_object(object:flaxe.graphics.ObjectBase, offset:flash.geom.Point):Void
+	{
+		this.draw_display(object.display, offset);
+	}
+	
+	public inline function draw_display(display:Display, offset:flash.geom.Point):Void
 	{
 		if(offset.x >= 0 && offset.x <= (this.width - display.width) 
 			&& offset.y >= 0 && offset.y <= (this.height - display.height))
@@ -84,11 +82,11 @@ class Display
 	
 	public static inline function from_bitmap_data(bmp:flash.display.BitmapData):Display
 	{
-		trace("from bitmap " + bmp.width + "/" + bmp.height);
-		var d:Display = new Display(bmp.width, bmp.height, 1);
-		d.memory.fromVector(bmp.getVector(bmp.rect));
+		var display = new Display(bmp.width, bmp.height);
 		
-		return d;
+		display.memory.fromVector(bmp.getVector(bmp.rect));
+		
+		return display;
 	}
 	
 /*

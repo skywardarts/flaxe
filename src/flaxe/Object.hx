@@ -6,4 +6,14 @@ class Object
 	{
 		
 	}
+	
+	public function toString():String
+	{
+		return this.to_string();
+	}
+	
+	public function to_string():String
+	{
+		return "[flaxe:object]";
+	}
 }

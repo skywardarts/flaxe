@@ -2,42 +2,36 @@
 
 class Socket
 {
-	public static var connect_successful_event:Int = 0;
-	public static var connect_failure_event:Int = 1;
-	public static var receive_successful_event:Int = 2;
-	public static var receive_failure_event:Int = 3;
+	public var connect_successful_event:flaxe.Event;
+	public var connect_failure_event:flaxe.Event;
+	public var receive_successful_event:flaxe.Event;
+	public var receive_failure_event:flaxe.Event;
+	public var send_successful_event:flaxe.Event;
+	public var send_failure_event:flaxe.Event;
 	
 	var host:String;
 	var port:Int;
 	
 	var socket:flash.net.Socket;
-	
-	var event_handler_list:Array<Dynamic>;
-	var authentication:Array<Dynamic>;
-	
+
 	var data:flash.utils.ByteArray;
 	
 	public function new(host:String, port:Int)
 	{
+		this.data = new flash.utils.ByteArray();
+		
+		this.connect_successful_event = new flaxe.Event();
+		this.connect_failure_event = new flaxe.Event();
+		this.receive_successful_event = new flaxe.Event();
+		this.receive_failure_event = new flaxe.Event();
+		this.send_successful_event = new flaxe.Event();
+		this.send_failure_event = new flaxe.Event();
+		
 		this.host = host;
 		this.port = port;
 		
 		this.socket = new flash.net.Socket();
-		//this.socket.endian = flash.utils.Endian.LITTLE_ENDIAN;
-		
-		this.event_handler_list = new Array();
-		
-		this.authentication = 
-		[
-			0xff, 0x50, 0x3a, 0x00, 0x00, 0x00, 0x00, 0x00, 
-			0x36, 0x38, 0x58, 0x49, 0x50, 0x58, 0x32, 0x44, 
-			0x0c, 0x00, 0x00, 0x00, 0x53, 0x55, 0x6e, 0x65, 
-			0x55, 0xb4, 0x47, 0x40, 0x88, 0xff, 0xff, 0xff, 
-			0x09, 0x04, 0x00, 0x00, 0x09, 0x04, 0x00, 0x00, 
-			0x55, 0x53, 0x41, 0x00, 0x55, 0x6e, 0x69, 0x74, 
-			0x65, 0x64, 0x20, 0x53, 0x74, 0x61, 0x74, 0x65, 
-			0x73, 0x00
-		];
+		this.socket.endian = flash.utils.Endian.LITTLE_ENDIAN;
 		
 		this.initialize();
 	}
@@ -67,34 +61,40 @@ class Socket
 	
 	public function on_receive(event:flash.events.Event):Void
 	{
+		trace("[flaxe:network:on_receive] " + event);
+		
 		this.receive();
 	}
 	
-	public function connect(successful:Dynamic, failure:Dynamic):Void
+	public function connect(successful:Void->Void = null, failure:Void->Void = null):Void
 	{
-		var self:Socket = this;
+		var self = this;
 		
-		var connect_successful_handler:Dynamic = null;
-		var connect_failure_handler:Dynamic = null;
+		var connect_successful_handler:flash.events.Event->Void = null;
+		var connect_failure_handler:flash.events.Event->Void = null;
 		
-		connect_successful_handler = function():Void
+		connect_successful_handler = function(e:flash.events.Event):Void
 		{
 			self.socket.removeEventListener(flash.events.Event.CONNECT, connect_successful_handler);
 			self.socket.removeEventListener(flash.events.SecurityErrorEvent.SECURITY_ERROR, connect_successful_handler);
 			self.socket.removeEventListener(flash.events.IOErrorEvent.IO_ERROR, connect_successful_handler);
 			
-			successful();
+			if(successful != null)
+				successful();
+			else
+				self.connect_successful_event.call([]);
 		};
 		
-		
-		
-		connect_failure_handler = function():Void
+		connect_failure_handler = function(e:flash.events.Event):Void
 		{
 			self.socket.removeEventListener(flash.events.Event.CONNECT, connect_successful_handler);
 			self.socket.removeEventListener(flash.events.SecurityErrorEvent.SECURITY_ERROR, connect_failure_handler);
 			self.socket.removeEventListener(flash.events.IOErrorEvent.IO_ERROR, connect_failure_handler);
 			
-			failure();
+			if(failure != null)
+				failure();
+			else
+				self.connect_failure_event.call([]);
 		};
 		
 		this.socket.addEventListener(flash.events.Event.CONNECT, connect_successful_handler);
@@ -104,93 +104,38 @@ class Socket
 		this.socket.connect(this.host, this.port);
 	}
 	
-	public function send(ba:flash.utils.ByteArray, successful:Dynamic, failure:Dynamic):Void
+	public function send(data:flash.utils.ByteArray, successful:Void->Void = null, failure:Void->Void = null):Void
 	{
-		var self:Socket = this;
+		var self = this;
 		// todo(daemn) check if connected
 		
-		/*
-		var send_successful_handler:Function = function()
-		{
-			self.socket.removeEventListener(ProgressEvent.SOCKET_DATA, send_successful_handler);
-			self.socket.removeEventListener(IOErrorEvent.IO_ERROR, send_failure_handler);
-			
-			successful();
-		};
-		
-		var send_failure_handler:Function = function()
-		{
-			self.socket.removeEventListener(ProgressEvent.SOCKET_DATA, send_successful_handler);
-			self.socket.removeEventListener(IOErrorEvent.IO_ERROR, send_failure_handler);
-			
-			failure();
-		};
-		
-		this.socket.addEventListener(ProgressEvent.SOCKET_DATA, send_successful_handler);
-		this.socket.addEventListener(IOErrorEvent.IO_ERROR, send_failure_handler);*/
-		
-		//ba.writeMultiByte(data, "us-ascii");
-		
-		this.socket.writeBytes(ba);
+		this.socket.writeBytes(data);
 		this.socket.flush();
 		
-		successful();
+		if(successful != null)
+			successful();
+		else
+			this.send_successful_event.call([]);
 	}
 	
-	public function receive():Void
+	public function receive(successful:Void->Void = null, failure:Void->Void = null):Void
 	{
 		if(this.socket.bytesAvailable > 0)
 		{
-			var successful:Dynamic = this.event_handler_list[receive_successful_event];
+			this.socket.readBytes(this.data, data.length);
 			
-			var ba:flash.utils.ByteArray = new flash.utils.ByteArray(); 
-
-			this.socket.readBytes(ba);
+			this.data.position = 0;
+			
+			trace("[flaxe:network:socket] Received data.");
 			
 			if(successful != null)
-				successful(ba);
+				successful();
+			else
+				this.receive_successful_event.call_with([this.data]);
 		}
 		else
 		{
-			var failure:Dynamic = this.event_handler_list[receive_failure_event];
-			
-			if(failure != null)
-				failure();
+
 		}
-	}
-
-	/*
-	public function add_message_callback(message_id:int, callback:Function):void
-	{
-		if(!(message_id in this.callbacks))
-			this.callbacks[message_id] = new Array();
-		
-		this.callbacks[message_id].push(callback);
-	}*/
-
-/*
-	private function connect_handler(event:Event):void
-	{
-		trace("[BNCS] Connected.");
-		
-		this.socket.writeByte(0x01);
-		
-		this.socket.flush();
-		
-		for each(var byte:int in this.authentication)
-			this.socket.writeByte(byte);
-		
-		this.socket.flush();
-	}*/
-
-	
-	public inline function add_event_handler(event_id:Int, handler:Dynamic):Void
-	{
-		this.event_handler_list[event_id] = handler;
-	}
-	
-	public inline function remove_event_handler(event_id:Int):Void
-	{
-		this.event_handler_list[event_id] = null;
 	}
 }

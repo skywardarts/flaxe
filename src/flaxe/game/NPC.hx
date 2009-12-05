@@ -8,7 +8,6 @@ class NPC extends flaxe.game.Object
 	{
 		super();
 		
-		this.id = 0;
 		this.name = "Undefined";
 	}
 
@@ -27,6 +26,5 @@ class NPC extends flaxe.game.Object
 		return changed_;
 	}
 	
-	public var id:Int;
 	public var name:String;
 }

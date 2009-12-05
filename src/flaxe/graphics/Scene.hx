@@ -1,23 +1,21 @@
 package flaxe.graphics;
 
-class Scene<T> implements haxe.rtti.Generic
+class Scene<CameraType> implements haxe.rtti.Generic
 {
 	public function new()
 	{
-		this.models = new haxe.FastList<flaxe.graphics.Model2>();
-		this.camera = new flaxe.graphics.Camera2(0, 0);
-		
-		//this.stats = new scene_statistics_component(mc, 0, 0, 200, 200);
+		this.object_list = new haxe.FastList<flaxe.graphics.ObjectBase>();
+		this.camera = new CameraType(0, 0);
 	}
 	
-	public inline function add_model(model:flaxe.graphics.Model2):Void
+	public inline function add_object(model:flaxe.graphics.ObjectBase):Void
 	{
-		this.models.add(model);
+		this.object_list.add(model);
 	}
 
-	public inline function remove_model(model:flaxe.graphics.Model2):Void
+	public inline function remove_object(model:flaxe.graphics.ObjectBase):Void
 	{
-		this.models.remove(model);
+		this.object_list.remove(model);
 	}
 
 	public function update(time:flaxe.core.Timestamp):Void
@@ -27,27 +25,16 @@ class Scene<T> implements haxe.rtti.Generic
 
 	public function draw(device:flaxe.graphics.Device):Void
 	{
-		for(model in this.models)
+		for(object in this.object_list)
 		{
-			
-			model.draw(device);
-			
-			//for(i in 0...1000)
-			//{
-			var offset:flash.geom.Point = new flash.geom.Point((model.x - this.camera.x) + (device.width / 2), (model.y - this.camera.y) * -1 + (device.height / 2));
-			//trace("new play pos: " + offset.x + " / " + offset.y);
-			//device.display.copy_bitmapdata(model.display, rect);
-			//device.display.screen.copyPixels(model.display, model.display.rect, rect.topLeft);
-			//trace(device.display);
-			device.display.draw(model.display, offset);
-			//}
-			
-			
+			var offset = new flash.geom.Point((object.x - this.camera.x) + (device.width / 2), (object.y - this.camera.y) * -1 + (device.height / 2));
+
+			device.display.draw(object, offset);
 		}
 		
-		this.models = new haxe.FastList<flaxe.graphics.Model2>();
+		this.object_list = new haxe.FastList<flaxe.graphics.ObjectBase>();
 	}
 	
-	private var models:haxe.FastList<flaxe.graphics.Model2>;
-	public var camera:flaxe.graphics.Camera2;
+	private var object_list:haxe.FastList<flaxe.graphics.ObjectBase>;
+	public var camera:CameraType;
 }
